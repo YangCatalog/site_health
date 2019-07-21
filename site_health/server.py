@@ -22,6 +22,7 @@ __email__ = "douglas@hubler.us"
 import os
 import sqlite3
 import json
+from . import check
 from flask import Flask
 
 app = Flask(__name__)
@@ -83,6 +84,10 @@ def errors():
     return json.dumps({
         "errors" : errors
     })
+
+@app.route('/run-new', methods=['POST'])
+def run_new():
+    check.run_check()
 
 
 @app.route('/endpoint/<name>')

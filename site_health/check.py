@@ -103,8 +103,7 @@ def test_request(db, run_id, endpoint):
         out.write(resp_content)
     record_request(db, key, run_id, resp.status_code, duration, size, hash)
 
-
-if __name__ == '__main__':
+def run_check():
     db = sqlite3.connect('results.db')
     api_endpoints_file = open('yangcatalog.postman_collection.json')
     api_endpoints = json.load(api_endpoints_file)
@@ -115,3 +114,6 @@ if __name__ == '__main__':
     for item in api_endpoints["item"]:
         test_request(db, run_id, item)
     db.commit()
+
+if __name__ == '__main__':
+    run_check()
