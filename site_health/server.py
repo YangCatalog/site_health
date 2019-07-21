@@ -54,6 +54,36 @@ def endpoints():
         endpoints.append(row)
     return json.dumps({"endpoints" : endpoints})
 
+@app.route('/errors')
+def errors():
+    csr = db.cursor()
+    q = """
+      select
+        run.run_id,
+        run.timestamp,
+        endpoint_test.name,
+        endpoint_test.status_code
+      from 
+        run, endpoint_test
+      where 
+        run.run_id = endpoint_test.run_id 
+        and endpoint_test.status_code != 200
+        order by run.timestamp desc
+        limit 20
+    """
+    errors = []
+    for row in csr.execute(q):
+        run_id, timestamp, name, status_code = row
+        errors.append({
+            "run_id" : run_id,
+            "name" : name,
+            "timestamp" : timestamp,
+            "status_code" : status_code,
+        })
+    return json.dumps({
+        "errors" : errors
+    })
+
 
 @app.route('/endpoint/<name>')
 def endpoint(name):
